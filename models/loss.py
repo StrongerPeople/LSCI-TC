@@ -5,7 +5,7 @@ import torch.nn.functional as F
 import collections
 
 class Weight_soft_CEloss(nn.Module):
-    def __init__(self,reduction='mean',imagegamma=1.0,textgamma=0.0,alpha=0.5,maxgamma=5.0,mingamma = -1.0):
+    def __init__(self,reduction='mean',imagegamma=1.0,textgamma=1.0,alpha=0.3,maxgamma=2.0,mingamma = -1.0):
         super(Weight_soft_CEloss, self).__init__()
         self.reduction = reduction
         self.imagegamma =  imagegamma
@@ -37,17 +37,17 @@ class Weight_soft_CEloss(nn.Module):
         self.image_to_textgamma = self.update(self.image_to_textgamma, image_text_meancalibration_gap)
         self.text_to_imagegamma = self.update(self.text_to_imagegamma, text_image_meancalibration_gap)
         # inv-focal loss - focal loss switch
-        if abs(self.image_to_textgamma) <  abs(self.alpha * self.imagegamma):
-            self.image_to_textgamma = - torch.tensor(self.alpha * self.imagegamma)
-        elif abs(self.text_to_imagegamma) <  abs(self.alpha * self.textgamma):
-            self.text_to_imagegamma = - torch.tensor(self.alpha * self.textgamma)
+        if abs(self.image_to_textgamma) <  abs(self.alpha):
+            self.image_to_textgamma = - torch.tensor(self.alpha * self.image_to_textgamma)
+        elif abs(self.text_to_imagegamma) <  abs(self.alpha):
+            self.text_to_imagegamma = - torch.tensor(self.alpha * self.text_to_imagegamma)
         print(f"update image_to_textgamma to {self.image_to_textgamma}")
         print(f"update text_to_imagegamma to {self.text_to_imagegamma}")
         return 0
     
     def forward(self, inputs, labels,text_to_image=False):
         """"
-            warning: the weight shape should be same with the loss shape,the bug 0**0 
+            warning: the weight shape should be same with the inputs shape,the bug 0**0 
         """
         pt = F.softmax(inputs, dim=1)
         if text_to_image:
