@@ -1,0 +1,29 @@
+############## The train & val & test set root ##############
+train_file: [data/finetune/rsitmd_train.json]    # Training data file['data/finetune/RET_2.json']
+test_file: data/finetune/rsitmd_test.json       # Testing data file
+val_file: data/finetune/rsitmd_val.json      # valing data file
+image_root: ./data/        # Root directory for images
+################ Training setting ################
+seed: 42 # 0 888 42
+image_res: 224
+batch_size_train: 64
+batch_size_test: 128
+batch_size_test_text: 128
+
+model: vit
+if_evaluation: true
+fusion_dim: 512
+num_bins: 15
+k: 40
+############## Other Settings ##############
+optimizer: {opt: adamW, lr: 2.0e-7, weight_decay: 0.04, lr_mult: 2}
+schedular: {sched: linear_cos, max_lr: 2.0e-5, min_lr: 2.0e-7, epochs: 20, num_warmup_steps: 0.1}
+################ Model setting  #######################################################################################
+#== the config of loss
+weight_init_imagegamma: 2.0
+weight_init_textgamma: 2.0
+themaxgamma: 5.0
+themingamma: -1.0
+soft_alpha: 0.8 # 1.0 for one hot label command to 0.7-1.0
+########################################################################################################################
+

@@ -1,13 +1,20 @@
-## LSCI-TC 
-The source code of Semantic_Consistence _Interaction_with_Calibration_Loss_for_Remote_Sensing_Image-Text_Retrieval.
-### Experimental Section Summary
+# LSCI-TC: Semantic Consistence Interaction with Calibration Loss for Remote Sensing Image-Text Retrieval
 
-The proposed LSCI-TC framework significantly improves retrieval performance in remote sensing image-text retrieval tasks by introducing cross-modal fine-grained interaction and task-adaptive calibration loss. The experimental section mainly includes the following aspects:
+[![Paper](https://img.shields.io/badge/Paper-ArXiv%20Link-red)](https://arxiv.org/xxxxxx) [![GitHub Stars](https://img.shields.io/github/stars/StrongerPeople/LSCI-TC)](https://github.com/StrongerPeople/LSCI-TC) [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
-1. **Quantitative Comparison and Visualization**: On the RSITMD dataset, LSCI-TC achieves higher mRecall and lower mECE in image-text retrieval tasks, and demonstrates stronger semantic matching ability in Top-5 retrieval results.
-2. **Ablation Studies**:
-   - By gradually introducing task calibration loss, soft labels, and the LSCI module, mRecall increases from 44.35% to 59.74%, and mECE is significantly reduced, verifying the effectiveness of each module.
-   - Comparisons of different attention mechanisms and feature fusion methods within the LSCI module show that residual connections and multi-head interactions can further improve retrieval performance.
-   - Hyperparameters such as the initial gamma value of the task calibration loss, the number of bins, and the soft label weight have a significant impact on performance. The best mRecall is achieved when initgamma=-1.0, bin=15, and soft label weight is 0.6-1.0.
-3. **Visualization Analysis**: Using methods such as Grad-CAM, LSCI-TC demonstrates more precise word-level localization, better capturing fine-grained semantic correspondences between images and texts.
+## Cite
 
+如果本项目对您的研究有帮助，请引用我们的论文：
+
+```
+@ARTICLE{11316677,
+  author={Xu, Jinlong and Ge, Yun and Zeng, Yan and Liu, Huyang},
+  journal={IEEE Transactions on Geoscience and Remote Sensing}, 
+  title={Semantic Consistency Interaction With Calibration Loss for Remote Sensing Image–Text Retrieval}, 
+  year={2026},
+  volume={64},
+  number={},
+  pages={1-17},
+  keywords={Calibration;Remote sensing;Semantics;Visualization;Adaptation models;Training;Accuracy;Text to image;Linguistics;Image retrieval;Local semantic consistency interaction (LSCI);modality interaction;remote sensing image–text retrieval (RSITR);task-specific calibration loss (TC)},
+  doi={10.1109/TGRS.2025.3649046}}
+```
