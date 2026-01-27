@@ -219,7 +219,7 @@ def main(args, config):
     print("Creating model", flush=True)
 
     model = CLIPFusionModule(config=config)
-    checkpoint = torch.load("./RS5M_Pretrain.pth", map_location='cpu')
+    checkpoint = torch.load(args.precheckpoint, map_location='cpu')
     state_dict = checkpoint['model'] if 'model' in checkpoint.keys() else checkpoint
     msg = model.load_state_dict(state_dict, strict=False)
     print("missing", msg.missing_keys)
@@ -278,8 +278,9 @@ def main(args, config):
             'image_text_ece': image_text_ece.item(),
             'text_image_ece': text_image_ece.item(),
         }
-        with open(os.path.join(args.output_dir+time_dir, "val_calibration_dict.txt"), "a") as f:
-            f.write(json.dumps(calibration_dict) + "\n")
+        if utils.is_main_process():
+            with open(os.path.join(args.output_dir+time_dir, "val_calibration_dict.txt"), "a") as f:
+                f.write(json.dumps(calibration_dict) + "\n")
         WeightsoftCEloss.updategamma(image_text_meancalibration_gap,text_image_meancalibration_gap)
         score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=0)
         image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i,test_loader.dataset.img2txt,val_loader.dataset.txt2img,num_bins=config['num_bins'])
@@ -292,8 +293,9 @@ def main(args, config):
             'image_text_ece': image_text_ece.item(),
             'text_image_ece': text_image_ece.item(),
         }
-        with open(os.path.join(args.output_dir+time_dir, "test_calibration_dict.txt"), "a") as f:
-            f.write(json.dumps(calibration_dict) + "\n")
+        if utils.is_main_process():
+            with open(os.path.join(args.output_dir+time_dir, "test_calibration_dict.txt"), "a") as f:
+                f.write(json.dumps(calibration_dict) + "\n")
         if epoch >= 25:
             score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=40)
             if utils.is_main_process():

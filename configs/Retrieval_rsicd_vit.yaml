@@ -16,8 +16,8 @@ fusion_dim: 512
 num_bins: 15
 k: 40
 ############## Other Settings ##############
-optimizer: {opt: adamW, lr: 2.0e-7, weight_decay: 0.04, lr_mult: 2}
-schedular: {sched: linear_cos, max_lr: 2.0e-5, min_lr: 2.0e-7, epochs: 20, num_warmup_steps: 0.1}
+optimizer: {opt: adamW, lr: 1.0e-7, weight_decay: 0.04, lr_mult: 2}
+schedular: {sched: linear_cos, max_lr: 1.0e-5, min_lr: 1.0e-7, epochs: 30, num_warmup_steps: 0.1}
 ################ Model setting  #######################################################################################
 #== the config of loss
 weight_init_imagegamma: 2.0

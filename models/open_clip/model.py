@@ -439,8 +439,8 @@ class CLIP(nn.Module):
             sim_targets = torch.zeros(sim_i2t_m.size(), device=device)
             sim_targets.fill_diagonal_(1.0)
             # soft-label
-            sim_i2t_targets = 0.1 * F.softmax(sim_i2t_m, dim=1) + 0.9 * sim_targets
-            sim_t2i_targets = 0.1 * F.softmax(sim_t2i_m, dim=1) + 0.9 * sim_targets
+            sim_i2t_targets = 0.2 * F.softmax(sim_i2t_m, dim=1) + 0.8 * sim_targets
+            sim_t2i_targets = 0.2 * F.softmax(sim_t2i_m, dim=1) + 0.8 * sim_targets
         pos_itm_input = self.encode_weight_image(text, img_locals)
         logits_per_image = self.logit_scale.exp() * image_features @ text_feat_all + self.logit_bias
         logits_per_text = self.logit_scale.exp() * text_features @ image_feat_all + self.logit_bias

@@ -65,7 +65,7 @@ def run_retrieval(args):
 
     os.system(f"{dist_launch} "
               f"--use_env Retrieval.py --config {args.config} "
-              f"--output_dir {args.output_dir} --bs {args.bs} --checkpoint {args.checkpoint} {'--evaluate' if args.evaluate else ''}")
+              f"--output_dir {args.output_dir} --bs {args.bs} --precheckpoint {args.precheckpoint} {'--evaluate' if args.evaluate else ''}")
 
 
 def run(args):
