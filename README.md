@@ -85,7 +85,7 @@ Configuration files are located in the `configs/` directory:
 
 ## Pre-trained Models
 
-The project provides pre-trained weights `RS5M_Pretrain.pth` in huggingface, which can be used for model initialization or fine-tuning.
+The project provides pre-trained weights `RS5M_Pretrain.pth` in the huggingface repository ([https://huggingface.co/Tom1long/LSCI_TC](https://huggingface.co/Tom1long/LSCI_TC)), which can be used for model initialization or fine-tuning., which can be used for model initialization or fine-tuning.
 
 ## Project Structure
 

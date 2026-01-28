@@ -69,8 +69,6 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
     
     score_matrix_i2t = sims_matrix.clone()
     score_matrix_t2i = sims_matrix.clone().t()
-    # score_matrix_i2t = F.normalize(score_matrix_i2t, dim=1)
-    # score_matrix_t2i = F.normalize(score_matrix_t2i, dim=1)
     # re-ranking
     local_image_feas = torch.cat(local_images, dim=0).to(device)
     image_to_text_mapping = model.get_image_to_text_mapping(image_features, text_features, k)
