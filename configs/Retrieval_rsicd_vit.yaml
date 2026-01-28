@@ -20,9 +20,9 @@ optimizer: {opt: adamW, lr: 1.0e-7, weight_decay: 0.04, lr_mult: 2}
 schedular: {sched: linear_cos, max_lr: 1.0e-5, min_lr: 1.0e-7, epochs: 30, num_warmup_steps: 0.1}
 ################ Model setting  #######################################################################################
 #== the config of loss
-weight_init_imagegamma: 2.0
-weight_init_textgamma: 2.0
-themaxgamma: 5.0
+weight_init_imagegamma: 1.0
+weight_init_textgamma: 1.0
+themaxgamma: 3.0
 themingamma: -1.0
 soft_alpha: 0.9 # 1.0 for one hot label command to 0.7-1.0
 ########################################################################################################################

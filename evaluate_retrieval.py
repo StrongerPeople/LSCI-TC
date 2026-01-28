@@ -66,11 +66,8 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
     image_features = image_feas / image_feas.norm(dim=-1, keepdim=True)  
     text_features = text_feas / text_feas.norm(dim=-1, keepdim=True)
     sims_matrix = model.clip.logit_scale.exp() * image_features @ text_features.t() + model.clip.logit_bias
-    
     score_matrix_i2t = sims_matrix.clone()
     score_matrix_t2i = sims_matrix.clone().t()
-    # score_matrix_i2t = F.normalize(score_matrix_i2t, dim=1)
-    # score_matrix_t2i = F.normalize(score_matrix_t2i, dim=1)
     # re-ranking
     local_image_feas = torch.cat(local_images, dim=0).to(device)
     image_to_text_mapping = model.get_image_to_text_mapping(image_features, text_features, k)
@@ -87,8 +84,6 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
         txt_local_expanded = txt_local.repeat(k, 1)
         match_prob = model.encode_weight_image(txt_local_expanded, topk_img_fea)
         score_matrix_t2i[i, topk_image_idx] += match_prob
-    score_matrix_i2t = F.normalize(score_matrix_i2t, dim=1)
-    score_matrix_t2i = F.normalize(score_matrix_t2i, dim=1)
     if args.distributed:
         dist.barrier()   
         score_matrix_t2i = score_matrix_t2i.contiguous()
@@ -101,7 +96,7 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
         total_time_str = str(datetime.timedelta(seconds=int(total_time)))
         print('Evaluation time {}'.format(total_time_str))
     
-    return score_matrix_i2t.cpu().numpy(), score_matrix_t2i.cpu().numpy(),  F.normalize(sims_matrix,dim=1).cpu().numpy(), F.normalize(sims_matrix.t(),dim=1).cpu().numpy()
+    return score_matrix_i2t.cpu().numpy(), score_matrix_t2i.cpu().numpy(), sims_matrix.cpu().numpy(), sims_matrix.t().cpu().numpy()
 
 
 @torch.no_grad()
@@ -153,7 +148,6 @@ def main(args, config):
     utils.init_distributed_mode(args)
     device = torch.device(args.device)
     print("Creating model", flush=True)
-
     model = CLIPFusionModule(config=config)
     checkpoint = torch.load(args.checkpoint, map_location='cpu')
     state_dict = checkpoint['model'] if 'model' in checkpoint.keys() else checkpoint
@@ -174,9 +168,9 @@ def main(args, config):
     # Retrieval Metrics
     if utils.is_main_process():
         test_result = itm_eval(cross_score_test_i2t, cross_score_test_t2i, test_loader.dataset.txt2img, test_loader.dataset.img2txt)
-        print("### cross test", test_result)
+        print("cross test", test_result)
         test_result = itm_eval(dual_score_test_i2t, dual_score_test_t2i, test_loader.dataset.txt2img, test_loader.dataset.img2txt)
-        print("###dual test", test_result)
+        print("dual test", test_result)
     # Evaluation of the Dual-Tower Phase: Calibration Error Metrics
     image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(dual_score_test_i2t,dual_score_test_t2i,test_loader.dataset.img2txt,test_loader.dataset.txt2img,num_bins=config['num_bins'])
     mean_adaece = (image_text_ece.item() + text_image_ece.item()) / 2

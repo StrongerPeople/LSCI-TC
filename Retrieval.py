@@ -31,7 +31,7 @@ from torch.cuda.amp import autocast as autocast
 from torch.cuda.amp import GradScaler 
 from models.loss import Weight_soft_CEloss
 from utils.eval_utils import evaluate_dataset,evaluate_dataset_ECE_error
-
+import torch.multiprocessing as mp
 scaler = GradScaler()
 now = datetime.datetime.now()
 time_dir = now.strftime("%Y-%m-%d_%H-%M-%S")
@@ -117,7 +117,7 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
     texts_ids = torch.cat(texts_ids, dim=0).to(device)
     image_features = image_feas / image_feas.norm(dim=-1, keepdim=True)  
     text_features = text_feas / text_feas.norm(dim=-1, keepdim=True)
-    sims_matrix = torch.softmax(model.clip.logit_scale.exp() * image_features @ text_features.t() + model.clip.logit_bias,dim=1)
+    sims_matrix = model.clip.logit_scale.exp() * image_features @ text_features.t() + model.clip.logit_bias
     score_matrix_i2t = sims_matrix.clone()
     score_matrix_t2i = score_matrix_i2t.clone().t()
     local_image_feas = torch.cat(local_images, dim=0).to(device)
@@ -136,8 +136,8 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
             txt_local_expanded = txt_local.repeat(k, 1)
             match_prob = model.encode_weight_image(txt_local_expanded, topk_img_fea)
             score_matrix_t2i[i, topk_image_idx] += match_prob
-    score_matrix_i2t = F.normalize(score_matrix_i2t, dim=1)
-    score_matrix_t2i = F.normalize(score_matrix_t2i, dim=1)
+        score_matrix_i2t = F.normalize(score_matrix_i2t, dim=1)
+        score_matrix_t2i = F.normalize(score_matrix_t2i, dim=1)
     if args.distributed:
         dist.barrier()   
         score_matrix_t2i = score_matrix_t2i.contiguous()
@@ -336,6 +336,7 @@ def main(args, config):
     total_time_str = str(datetime.timedelta(seconds=int(total_time)))
     print('### Time {}'.format(total_time_str))
 if __name__ == '__main__':
+    mp.set_start_method('spawn', force=True)
     parser = argparse.ArgumentParser()
     parser.add_argument('--precheckpoint', type=str, required=True)
     parser.add_argument('--config', type=str, required=True)

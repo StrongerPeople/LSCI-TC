@@ -80,21 +80,28 @@ def ECE_error_mukhoti(confs, preds, labels, num_bins=15):
         
     confidences, predictions = torch.FloatTensor(confs), torch.FloatTensor(preds)
     if isinstance(labels, dict):
-        accuracies = []
+        # accuracies = []
+        # for i, pred in enumerate(predictions):
+        #     correct_labels = labels[i]
+        #     if isinstance(correct_labels, (list, tuple, np.ndarray)):
+        #         # multlabel
+        #         if pred in labels[i]:
+        #             accuracies.append(True)
+        #         else:
+        #             accuracies.append(False)
+        #     else:
+        #         if pred == correct_labels:
+        #             accuracies.append(True)
+        #         else:
+        #             accuracies.append(False)
+        accuracies = torch.zeros(len(predictions),dtype=torch.bool)
         for i, pred in enumerate(predictions):
             correct_labels = labels[i]
             if isinstance(correct_labels, (list, tuple, np.ndarray)):
-                # multlabel
-                if pred in labels[i]:
-                    accuracies.append(True)
-                else:
-                    accuracies.append(False)
+                accuracies[i] = pred.item() in labels[i]
             else:
-                if pred == correct_labels:
-                    accuracies.append(True)
-                else:
-                    accuracies.append(False)
-        accuracies = torch.tensor(accuracies)
+                accuracies[i] = (pred.item() == correct_labels)
+        accuracies = torch.tensor(accuracies).detach()
     else:
         labels = torch.FloatTensor(labels)
         accuracies = predictions.eq(labels)
@@ -124,7 +131,6 @@ def ECE_error_mukhoti(confs, preds, labels, num_bins=15):
         bin_dict[bin_num]['avg_confidence_in_bin'] = avg_confidence_in_bin.item()
         bin_dict[bin_num]['calibration_gap'] = bin_dict[bin_num]['avg_confidence_in_bin'] - bin_dict[bin_num]['accuracy_in_bin']
         bin_num += 1
-    meancalibration_gap = sum([v["calibration_gap"] for k, v in bin_dict.items()]) / len(bin_dict)
         
     return ece, bin_dict, meancalibration_gap
 

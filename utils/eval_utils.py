@@ -14,8 +14,8 @@ def evaluate_dataset(model, dataloader, device, num_bins,config):
     return image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap
 
 def evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i, image_text_labels, text_image_labels, num_bins):
-    score_test_i2t = torch.tensor(score_test_i2t)
-    score_test_t2i = torch.tensor(score_test_t2i)
+    score_test_i2t = torch.softmax(torch.tensor(score_test_i2t),dim=1)
+    score_test_t2i = torch.softmax(torch.tensor(score_test_t2i),dim=1)
     image_text_confidence_vals_list, image_text_predictions_list = torch.max(score_test_i2t, dim=1)
     text_image_confidence_vals_list, text_image_predictions_list = torch.max(score_test_t2i, dim=1)
     image_text_confidence_vals_list = image_text_confidence_vals_list.cpu().numpy().tolist()
