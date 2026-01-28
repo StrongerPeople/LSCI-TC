@@ -117,7 +117,7 @@ def evaluation(model, data_loader, tokenizer, device, config, k=40):
     texts_ids = torch.cat(texts_ids, dim=0).to(device)
     image_features = image_feas / image_feas.norm(dim=-1, keepdim=True)  
     text_features = text_feas / text_feas.norm(dim=-1, keepdim=True)
-    sims_matrix = model.clip.logit_scale.exp() * image_features @ text_features.t() + model.clip.logit_bias
+    sims_matrix = torch.softmax(model.clip.logit_scale.exp() * image_features @ text_features.t() + model.clip.logit_bias,dim=1)
     score_matrix_i2t = sims_matrix.clone()
     score_matrix_t2i = score_matrix_i2t.clone().t()
     local_image_feas = torch.cat(local_images, dim=0).to(device)
