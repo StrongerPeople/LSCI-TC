@@ -11,7 +11,7 @@ This is the source code implementation of the paper "Semantic Consistency Intera
 - **Local Semantic Consistency Interaction (LSCI)**: Enhances semantic consistency between image and text modalities
 - **Task-specific Calibration Loss (TC)**: Optimizes the calibration mechanism for retrieval tasks
 - **Multi-dataset Support**: Supports RSICD, RSITMD, and UCM datasets
-- **Based on GeoCLIP**: Uses pre-trained GeoCLIP models for feature extraction
+- **RS5M Dataset Pre-training**: Based on the RS5M dataset; the resulting pre-trained models can enhance feature extraction and improve retrieval performance.
 
 ## Environment Requirements
 
