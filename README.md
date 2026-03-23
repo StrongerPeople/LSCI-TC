@@ -1,4 +1,4 @@
-# LSCI-TC: Semantic Consistence Interaction with Calibration Loss for Remote Sensing Image-Text Retrieval
+# 2LSCI-TC: Semantic Consistence Interaction with Calibration Loss for Remote Sensing Image-Text Retrieval
 
 [![Paper](https://img.shields.io/badge/Paper-ArXiv%20Link-red)](https://ieeexplore.ieee.org/document/11316677) [![GitHub Stars](https://img.shields.io/github/stars/StrongerPeople/LSCI-TC)](https://github.com/StrongerPeople/LSCI-TC) [![License](https://img.shields.io/badge/License-MIT-green)](LICENSE)
 
@@ -34,7 +34,9 @@ cd LSCI-TC
 2. Install dependencies:
 
 ```bash
+pip install torch==2.0.1+cu118 torchvision==0.15.2+cu118 torchaudio==2.0.2+cu118 -f https://download.pytorch.org/whl/torch_stable.html
 pip install -r requirements.txt
+
 ```
 
 ## Dataset Preparation
