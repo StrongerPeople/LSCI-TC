@@ -282,21 +282,22 @@ def main(args, config):
             with open(os.path.join(args.output_dir+time_dir, "val_calibration_dict.txt"), "a") as f:
                 f.write(json.dumps(calibration_dict) + "\n")
         WeightsoftCEloss.updategamma(image_text_meancalibration_gap,text_image_meancalibration_gap)
-        score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=0)
-        image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i,test_loader.dataset.img2txt,test_loader.dataset.txt2img,num_bins=config['num_bins'])
-        mean_adaece = (image_text_ece.item() + text_image_ece.item()) / 2
-        calibration_dict = {
-            'epoch': epoch,
-            'mean_ece': mean_adaece,
-            'image_text_meancalibration_gap': image_text_meancalibration_gap,
-            'text_image_meancalibration_gap': text_image_meancalibration_gap,
-            'image_text_ece': image_text_ece.item(),
-            'text_image_ece': text_image_ece.item(),
-        }
+        with torch.no_grad():
+            score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=0)
+            image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i,test_loader.dataset.img2txt,test_loader.dataset.txt2img,num_bins=config['num_bins'])
+            mean_adaece = (image_text_ece.item() + text_image_ece.item()) / 2
+            calibration_dict = {
+                'epoch': epoch,
+                'mean_ece': mean_adaece,
+                'image_text_meancalibration_gap': image_text_meancalibration_gap,
+                'text_image_meancalibration_gap': text_image_meancalibration_gap,
+                'image_text_ece': image_text_ece.item(),
+                'text_image_ece': text_image_ece.item(),
+            }
         if utils.is_main_process():
             with open(os.path.join(args.output_dir+time_dir, "test_calibration_dict.txt"), "a") as f:
                 f.write(json.dumps(calibration_dict) + "\n")
-        if epoch >= 25:
+        if epoch >= 0:
             score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=40)
             if utils.is_main_process():
                 test_result = itm_eval(score_test_i2t, score_test_t2i, test_loader.dataset.txt2img, test_loader.dataset.img2txt)
