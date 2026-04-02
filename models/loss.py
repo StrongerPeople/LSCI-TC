@@ -65,6 +65,6 @@ class Weight_soft_CEloss(nn.Module):
             pt = gamma_sign * pt
             gamma_mag = abs(self.image_to_textgamma).detach()
             weight_targets = torch.clamp(abs(labels - pt),min=1e-5,max=2)**gamma_mag
-        loss = weight_targets * loss
+        loss = weight_targets * loss                           
         # loss = -torch.sum(F.log_softmax(inputs, dim=1)*weight_targets*labels,dim=1).mean()
         return loss.mean()

@@ -283,7 +283,7 @@ def main(args, config):
                 f.write(json.dumps(calibration_dict) + "\n")
         WeightsoftCEloss.updategamma(image_text_meancalibration_gap,text_image_meancalibration_gap)
         score_test_i2t, score_test_t2i = evaluation(model_without_ddp, test_loader, tokenizer, device, config, k=0)
-        image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i,test_loader.dataset.img2txt,val_loader.dataset.txt2img,num_bins=config['num_bins'])
+        image_text_ece, image_text_bin_dict,text_image_ece,text_image_bin_dict,image_text_meancalibration_gap,text_image_meancalibration_gap = evaluate_dataset_ECE_error(score_test_i2t,score_test_t2i,test_loader.dataset.img2txt,test_loader.dataset.txt2img,num_bins=config['num_bins'])
         mean_adaece = (image_text_ece.item() + text_image_ece.item()) / 2
         calibration_dict = {
             'epoch': epoch,
