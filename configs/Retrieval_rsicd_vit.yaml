@@ -1,5 +1,5 @@
 ############## The train & val & test set root ##############
-train_file: [data/finetune/rsicd_train.json]    # Training data file['data/finetune/RET_2.json']
+train_file: [data/finetune/RET_2.json]    # Training data file['data/finetune/RET_2.json']
 test_file: data/finetune/rsicd_test.json       # Testing data file
 val_file: data/finetune/rsitcd_val.json      # valing data file
 image_root: ./data/        # Root directory for images
@@ -24,6 +24,6 @@ weight_init_imagegamma: 2.0
 weight_init_textgamma: 2.0
 themaxgamma: 5.0
 themingamma: -1.0
-soft_alpha: 0.9 # 1.0 for one hot label command to 0.7-1.0
+soft_alpha: 0.8 # 1.0 for one hot label command to 0.7-1.0
 ########################################################################################################################
 

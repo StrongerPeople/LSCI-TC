@@ -1,4 +1,4 @@
-CHECKPOINT_PATH="./checkpoint_last.pth" # Path to the trained model checkpoint RS5M_Pretrain.pth
+CHECKPOINT_PATH="./checkpoint_last.pth" # Path to the trained model checkpoint RS5M_Pretrain.pth or checkpoint.pth
 CONFIG_PATH="./configs/Retrieval_rsitmd_vit.yaml"                                                                                    
 
 DEVICE="cuda"                                                 

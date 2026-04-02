@@ -32,14 +32,14 @@ class CLIPFusionModule(nn.Module):
         image_dim: int = 768,
         text_dim: int = 512,
         fusion_dim: int = 512, 
-        alpha: float = 0.1,
+        alpha: float = 0.9,
         temperature=0.07, 
         margin=0.2
     ):
         super().__init__()
         self.image_dim = image_dim
         self.text_dim = text_dim
-        self.alpha = alpha
+        self.alpha = config.get("soft_alpha", 0.9) if config else alpha
         self.clip, self.preprocess_train, self.preprocess_val = create_and_load_pretrained(config)
 
 
@@ -76,5 +76,5 @@ class CLIPFusionModule(nn.Module):
         return topk_indices
     
     def forward(self, image, text,WeightsoftCEloss):
-        total_loss = self.clip(image, text,WeightsoftCEloss)['total_loss']
+        total_loss = self.clip(image, text,WeightsoftCEloss,self.alpha)['total_loss']
         return total_loss
